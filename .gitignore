@@ -1,3 +1,4 @@
 Gemfile.lock
 features/auth*
 *.swp
+features/recipient*

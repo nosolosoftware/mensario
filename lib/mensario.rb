@@ -17,5 +17,17 @@ module Mensario
     
     def synchronize
     end
+
+    def send_message(prefix, phone, message)
+    end
+
+    def quantity
+    end
+
+    def license_query
+    end
+
+    def request_query(request_id)
+    end
   end
 end
