@@ -29,3 +29,43 @@ end
 Given /^a "(.*)" timezone$/ do |timezone|
   @message.timezone = timezone
 end
+
+Given /^the phone number in the file "([^"]*)"$/ do |file|
+  # Load config data from files
+  file = File.expand_path('../../', __FILE__) + '/' + file
+  @data = YAML.load(open(file))
+
+  @message.recipient = @data[:recipient]
+end
+
+Given /^the prefix "([^"]*)"$/ do |prefix|
+  @message.prefix = prefix
+end
+
+Then /^the API should give us the request id$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the API should give us the quantity remaining$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^the request id$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the API should give us the status code of the request$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^a wrong request id$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the status code should be "([^"]*)"$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the API should give us the type and quantity of the license$/ do
+  pending # express the regexp above with the code you wish you had
+end
