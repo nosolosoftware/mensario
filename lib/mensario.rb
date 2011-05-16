@@ -41,12 +41,26 @@ module Mensario
     # Timezone for use in API
     attr_accessor :timezone
  
- 
+    # Recipient
+    attr_accessor :recipient, :prefix
+
     def initialize
       yield self
     end
 
     def synchronize
+    end
+
+    def send_message
+    end
+
+    def quantity
+    end
+
+    def license_query
+    end
+
+    def request_query(request_id)
     end
   end
 end
