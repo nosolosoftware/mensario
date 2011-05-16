@@ -3,7 +3,7 @@ Given /^the license, username and password in file "(.*)"$/ do |file|
   file = File.expand_path('../../', __FILE__) + '/' + file
   @data = YAML.load(open(file))
 
-  @message = Mensario.new do |c|
+  @message = Mensario::Mensario.new do |c|
     c.license = @data[:license]
     c.username = @data[:username]
     c.password = @data[:password]
