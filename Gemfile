@@ -1,6 +1,8 @@
 # Gems source
 source :rubygems
 
+gem 'xml-simple', '~> 1.0.15' # XML
+
 group :development do
   gem 'jeweler', '~> 1.6.0' # For create ruby gems
   gem 'rake', '~> 0.8.7' # Run tasks
