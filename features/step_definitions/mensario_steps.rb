@@ -15,7 +15,7 @@ When /^I do the "(.*)" call$/ do |call|
 end
 
 Then /^the API should response with "(.*)" code$/ do |code|
-  pending
+  fail unless @message.status == code
 end
 
 Given /^a empty timezone$/ do
