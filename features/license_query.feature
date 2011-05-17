@@ -11,7 +11,7 @@ Scenario: The query has been done correctly
   And the status code should be "OK"
   And the API should give us the type and quantity of the license
 
-Scenario: The license number is not correct
+Scenario: The license number is incorrect
   Given the license, username and password in file "auth-ko_inv.yml"
   When I do the "license_query" call
   Then the API should response with "OK" code
