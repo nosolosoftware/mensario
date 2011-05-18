@@ -1,7 +1,11 @@
 Given /^the license, username and password in file "(.*)"$/ do |file|
   # Load config data from files
   file = File.expand_path('../../', __FILE__) + '/' + file
-  @data = YAML.load(open(file))
+  if File.exist? file
+    @data = YAML.load_file(file)
+  else
+    @data = {:license => '', :username => '', :password => ''}
+  end
 
   @message = Mensario::Mensario.new do |c|
     c.license = @data[:license]
@@ -22,8 +26,13 @@ Given /^a empty timezone$/ do
   @message.timezone = ''
 end
 
-Then /^the timestamp should be in GMT\+(\d+)$/ do |offset|
-pending
+Then /^the timestamp should be correct$/ do
+  # create time in specified zone
+  tz = TZInfo::Timezone.get(@message.timezone != '' ? @message.timezone : 'UTC' )
+  # Parse the response time
+  time = @message.response['timestamp'].first.match(/^\d{8}(\d{2})/)[1].to_i
+  # Validate
+  fail unless (tz.now.hour.to_i - time).abs < 1800
 end
 
 Given /^a "(.*)" timezone$/ do |timezone|

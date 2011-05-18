@@ -23,6 +23,8 @@ module Mensario
     # Status of the response
     attr_reader :status
 
+    attr_reader :response
+
     def initialize
       yield self
     end
@@ -46,10 +48,10 @@ module Mensario
       request = Net::HTTP::Post.new(API_PATH)
       request.body = xml
       response = http.request(request)
-
-      result = XmlSimple.xml_in(response.body)
-      @status = result['result'].first
-      result
+      
+      @response = XmlSimple.xml_in(response.body)
+      @status = @response['result'].first
+      @response
     end
     
     def synchronize
