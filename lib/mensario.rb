@@ -65,7 +65,7 @@ module Mensario
               'timezone' => [@timezone]
       }
 
-      response = api_call(xml)
+      api_call(xml)['timestamp']
     end
 
     def send_message(prefix, phone, message)
