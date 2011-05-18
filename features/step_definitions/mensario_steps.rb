@@ -15,11 +15,19 @@ Given /^the license, username and password in file "(.*)"$/ do |file|
 end
 
 When /^I do the "(.*)" call$/ do |call|
-  @result = @message.send(call.to_sym)
+  begin
+    @result = @message.send(call.to_sym)
+  rescue Mensario::MensarioException => e
+    @exception = e
+  end
 end
 
 Then /^the API should response with "(.*)" code$/ do |code|
   fail unless @message.status == code
+
+  if @message.status != Mensario::Status::OK
+    fail unless @exception.status == @message.status
+  end
 end
 
 Given /^a empty timezone$/ do
