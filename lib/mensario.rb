@@ -46,7 +46,7 @@ module Mensario
       request = Net::HTTP::Post.new(API_PATH)
       request.body = xml
       response = http.request(request)
-      
+
       result = XmlSimple.xml_in(response.body)
       @status = result['result'].first
       result
@@ -69,12 +69,46 @@ module Mensario
     end
 
     def quantity
+      xml = { 'task' => ['QUANT-QRY'],
+              'license' => {
+                'number'  => @license,
+                'user'    => @username,
+                'pass'    => @password
+              }
+            }
+      
+      api_call(xml)['quantity'].first.to_i
     end
 
     def license_query
+      xml = { 'task' => ['LIC-QRY'],
+              'licenses' => {
+                'license' => {
+                  'number'  => @license,
+                  'user'    => @username,
+                  'pass'    => @password
+                }
+              }
+      }
+
+      response = api_call(xml)['licenses'].first['license'].first
+      hash = { 'status' => response['status'].first }
+      hash.merge!({ 'quantity' => response['quantity'].first.to_i }) if response['quantity']
+      hash.merge!({ 'type' => response['type'].first }) if response['type']
+      hash
     end
 
     def request_query(request_id)
+      xml = { 'task' => ['REQU-QRY'],
+              'license' => {
+                'number'    => @license,
+                'user'      => @username,
+                'pass'      => @password
+              },
+              'request' => [request_id]
+            }
+
+      api_call(xml)['status']
     end
   end
 end
