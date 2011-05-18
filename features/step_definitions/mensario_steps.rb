@@ -22,8 +22,13 @@ Given /^a empty timezone$/ do
   @message.timezone = ''
 end
 
-Then /^the timestamp should be in GMT\+(\d+)$/ do |offset|
-pending
+Then /^the timestamp should be correct$/ do
+  # create time in specified zone
+  tz = TZInfo::Timezone.get(@message.timezone != '' ? @message.timezone : 'UTC' )
+  # Parse the response time
+  time = @message.response['timestamp'].first.match(/^\d{8}(\d{2})/)[1].to_i
+  # Validate
+  fail unless (tz.now.hour.to_i - time).abs < 1800
 end
 
 Given /^a "(.*)" timezone$/ do |timezone|
