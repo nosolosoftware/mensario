@@ -16,7 +16,7 @@ end
 
 When /^I do the "(.*)" call$/ do |call|
   begin
-    @message.send(call.to_sym)
+    @result = @message.send(call.to_sym)
   rescue Mensario::MensarioException => e
     @exception = e
   end
@@ -62,7 +62,11 @@ Given /^the text body$/ do
 end
 
 When /^I do the send_message call$/ do
-  @message.send_message(@prefix, @phone, @body)
+  begin
+    @result = @message.send_message(@prefix, @phone, @body)
+  rescue Mensario::MensarioException => e
+    @exception = e
+  end
 end
 
 Then /^the API should give us the request id$/ do
@@ -70,29 +74,34 @@ Then /^the API should give us the request id$/ do
 end
 
 Then /^the API should give us the quantity remaining$/ do
-  pending # express the regexp above with the code you wish you had
+  fail unless @result.class == Fixnum 
 end
 
 Given /^the request id$/ do
-  pending # express the regexp above with the code you wish you had
+  pending
 end
 
 When /^I do the request_query call$/ do
-  pending # express the regexp above with the code you wish you had
+  begin
+    @result = @message.request_query(@request_id)
+  rescue Mensario::MensarioException => e
+    @exception = e
+  end
 end
 
 Then /^the API should give us the status code of the request$/ do
-  pending # express the regexp above with the code you wish you had
+  fail unless @result
 end
 
 Given /^a wrong request id$/ do
-  pending # express the regexp above with the code you wish you had
+  @request_id = 4
 end
 
-Then /^the status code should be "([^"]*)"$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
+Then /^the status code should be "([^"]*)"$/ do |status|
+  fail unless @result['status'] == status
 end
 
 Then /^the API should give us the type and quantity of the license$/ do
-  pending # express the regexp above with the code you wish you had
+  fail unless @result['quantity']
+  fail unless @result['type']
 end
