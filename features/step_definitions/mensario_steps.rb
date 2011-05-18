@@ -1,7 +1,11 @@
 Given /^the license, username and password in file "(.*)"$/ do |file|
   # Load config data from files
   file = File.expand_path('../../', __FILE__) + '/' + file
-  @data = YAML.load(open(file))
+  if File.exist? file
+    @data = YAML.load_file(file)
+  else
+    @data = {:license => '', :username => '', :password => ''}
+  end
 
   @message = Mensario::Mensario.new do |c|
     c.license = @data[:license]
