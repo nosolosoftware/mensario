@@ -62,7 +62,11 @@ Given /^the text body$/ do
 end
 
 When /^I do the send_message call$/ do
-  @message.send_message(@prefix, @phone, @body)
+  begin
+    @result = @message.send_message(@prefix, @phone, @body)
+  rescue Mensario::MensarioException => e
+    @exception = e
+  end
 end
 
 Then /^the API should give us the request id$/ do
@@ -78,7 +82,11 @@ Given /^the request id$/ do
 end
 
 When /^I do the request_query call$/ do
-  @message.request_query(@request_id)
+  begin
+    @result = @message.request_query(@request_id)
+  rescue Mensario::MensarioException => e
+    @exception = e
+  end
 end
 
 Then /^the API should give us the status code of the request$/ do
