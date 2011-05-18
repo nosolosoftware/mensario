@@ -51,6 +51,7 @@ module Mensario
       
       @response = XmlSimple.xml_in(response.body)
       @status = @response['result'].first
+      raise MensarioException.new(@status) unless @status == Status::OK
       @response
     end
     
