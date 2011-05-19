@@ -55,6 +55,9 @@ module Mensario
       @response
     end
     
+    # Do the synchronize method of api
+    #
+    # @result [Integer] timestamp in the specified timezone
     def synchronize
       xml = { 'task' => ['SYNC'],
               'license'  => {
@@ -65,7 +68,7 @@ module Mensario
               'timezone' => [@timezone]
       }
 
-      response = api_call(xml)
+      api_call(xml)['timestamp']
     end
 
     def send_message()
