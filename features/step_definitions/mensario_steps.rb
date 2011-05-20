@@ -77,8 +77,9 @@ Then /^the API should give us the quantity remaining$/ do
   fail unless @result.class == Fixnum 
 end
 
-Given /^the request id$/ do
-  pending
+Given /^the request id in file "([^"]*)"$/ do |file|
+  file = File.expand_path('../../', __FILE__) + '/' + file
+  @request_id = YAML.load(open(file))[:request]
 end
 
 When /^I do the request_query call$/ do

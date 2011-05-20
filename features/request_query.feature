@@ -6,7 +6,7 @@ So that Mensario should return the status code
 
 Scenario: The query has been done correctly
   Given the license, username and password in file "auth-ok.yml"
-  And the request id
+  And the request id in file "request_id.yml"
   When I do the request_query call
   Then the API should response with "OK" code
   And the API should give us the status code of the request
