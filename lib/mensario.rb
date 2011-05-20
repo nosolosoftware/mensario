@@ -103,7 +103,7 @@ module Mensario
     #   [
     # @example response
     #   [
-    #     { "number" => "LSTD020801EUHNKOQIHJ", "status" => ["OK"], "quantity"=> ["1000"], "type" => ["STD"] }
+    #     { "number" => "LSTD020801EUHNKOQIHJ", "status" => ["OK"], "quantity"=> ["1000"], "type" => ["STD"] },
     #     { "number" => "STD000001EAAAIIOOLP",  "status" => ["KO-INV"] } 
     #   ]
     def license_query(opts = [])
@@ -126,6 +126,13 @@ module Mensario
       api_call(xml)['licenses'].first['license']
     end
 
+    # Allows to check the state of a request
+    # @param [Fixnum] request id
+    # @result [Array] Response of the API
+    # @example response
+    #   [
+    #     { "cod" => "CMS-PEND", "id" => "12345678" }
+    #   ]
     def request_query(request_id)
       xml = { 'task' => ['REQU-QRY'],
               'license' => {
