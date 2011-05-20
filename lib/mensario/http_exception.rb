@@ -1,0 +1,2 @@
+class MensarioHttpException < MensarioException
+end
