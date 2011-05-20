@@ -77,8 +77,9 @@ Then /^the API should give us the quantity remaining$/ do
   fail unless @result.class == Fixnum 
 end
 
-Given /^the request id$/ do
-  pending
+Given /^the request id in file "([^"]*)"$/ do |file|
+  file = File.expand_path('../../', __FILE__) + '/' + file
+  @request_id = YAML.load(open(file))[:request]
 end
 
 When /^I do the request_query call$/ do
@@ -98,10 +99,33 @@ Given /^a wrong request id$/ do
 end
 
 Then /^the status code should be "([^"]*)"$/ do |status|
-  fail unless @result['status'] == status
+  fail unless @result.first['status'].first == status
 end
 
 Then /^the API should give us the type and quantity of the license$/ do
-  fail unless @result['quantity']
-  fail unless @result['type']
+  fail unless @result.first['quantity']
+  fail unless @result.first['type']
+end
+
+Given /^an extra license in file "([^"]*)"$/ do |file|
+  file = File.expand_path('../../', __FILE__) + '/' + file
+  @extra = YAML.load(open(file))
+  @extra = [
+    { 'number' => @extra[:license],
+      'user' => @extra[:username],
+      'pass' => @extra[:password]
+    }
+  ]
+end
+
+When /^I do the license_query call with parameters$/ do
+  begin
+    @result = @message.license_query(@extra)
+  rescue Mensario::MensarioException => e
+    @exception = e
+  end
+end
+
+Then /^the response should be an Array with 2 or more fields$/ do
+  fail unless @result.length > 1
 end
