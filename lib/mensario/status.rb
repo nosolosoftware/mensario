@@ -17,4 +17,8 @@ module Mensario
     KO_UNK_REQU = 'KO-UNK-REQU'
     KO_UNK_MSGS = 'KO-UNK-MSGS'
   end
+
+  module Task
+    MSG_QRY = 'MSG-QRY'
+  end
 end
