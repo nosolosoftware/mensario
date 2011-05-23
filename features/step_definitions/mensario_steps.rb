@@ -47,20 +47,6 @@ Given /^a "(.*)" timezone$/ do |timezone|
   @message.timezone = timezone
 end
 
-Given /^the phone number in the file "([^"]*)"$/ do |file|
-  # Load config data from files
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  @phone = YAML.load(open(file))[:recipient]
-end
-
-Given /^the prefix "([^"]*)"$/ do |arg|
-  @prefix = arg
-end
-
-Given /^the text body$/ do
-  @body = 'Probando, probando'
-end
-
 When /^I do the send_message call$/ do
   begin
     @result = @message.send_message(@prefix, @phone, @body)
@@ -82,50 +68,6 @@ Given /^the request id in file "([^"]*)"$/ do |file|
   @request_id = YAML.load(open(file))[:request]
 end
 
-When /^I do the request_query call$/ do
-  begin
-    @result = @message.request_query(@request_id)
-  rescue Mensario::MensarioException => e
-    @exception = e
-  end
-end
-
-Then /^the API should give us the status code of the request$/ do
-  fail unless @result
-end
-
 Given /^a wrong request id$/ do
   @request_id = 4
-end
-
-Then /^the status code should be "([^"]*)"$/ do |status|
-  fail unless @result.first['status'].first == status
-end
-
-Then /^the API should give us the type and quantity of the license$/ do
-  fail unless @result.first['quantity']
-  fail unless @result.first['type']
-end
-
-Given /^an extra license in file "([^"]*)"$/ do |file|
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  @extra = YAML.load(open(file))
-  @extra = [
-    { 'number' => @extra[:license],
-      'user' => @extra[:username],
-      'pass' => @extra[:password]
-    }
-  ]
-end
-
-When /^I do the license_query call with parameters$/ do
-  begin
-    @result = @message.license_query(@extra)
-  rescue Mensario::MensarioException => e
-    @exception = e
-  end
-end
-
-Then /^the response should be an Array with 2 or more fields$/ do
-  fail unless @result.length > 1
 end
