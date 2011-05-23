@@ -1,6 +1,3 @@
 Gemfile.lock
-features/auth*
 *.swp
-features/recipient*
-features/request_id.yml
 config/*
