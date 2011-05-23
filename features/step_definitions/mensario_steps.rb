@@ -1,23 +1,11 @@
-Given /^the license, username and password in file "(.*)"$/ do |file|
-  # Load config data from files
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  if File.exist? file
-    @data = YAML.load_file(file)
-  else
-    @data = {:license => '', :username => '', :password => ''}
-  end
-
-  @message = Mensario::Mensario.new do |c|
-    c.license = @data[:license]
-    c.username = @data[:username]
-    c.password = @data[:password]
-  end
+Given /^the license number, username and password in the profile "(.*)"$/ do |profile|
+  Mensario.config(:profile => profile.to_sym)
 end
 
 When /^I do the "(.*)" call$/ do |call|
   begin
-    @result = @message.send(call.to_sym)
-  rescue Mensario::MensarioException => e
+    @result = Mensario.send(call.to_sym)
+  rescue MensarioException => e
     @exception = e
   end
 end
@@ -59,7 +47,7 @@ Then /^the API should give us the request id$/ do
   pending # express the regexp above with the code you wish you had
 end
 
-Then /^the API should give us the quantity remaining$/ do
+Then /^the API should give us the balance remaining$/ do
   fail unless @result.class == Fixnum 
 end
 
