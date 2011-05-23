@@ -39,7 +39,7 @@ class Mensario
   def self.config(profile)
   end
     
-  def self.send
+  def self.send_message
   end
 
   def self.status(id)
@@ -48,17 +48,19 @@ class Mensario
   def self.destroy(id)
   end
 
-  # Allows to consult the quantity remaining
-  # @result [Fixnum] the quantity remaining of the license
+  # Allows to consult the balance remaining of the license
+  # @result [Fixnum] the balance remaining
   def self.balance
+    self.config unless @@config
+
     xml = { 'task' => ['QUANT-QRY'],
             'license' => {
-              'number'  => @license,
-              'user'    => @username,
-              'pass'    => @password
+              'number'  => @@config[:license],
+              'user'    => @@config[:username],
+              'pass'    => @@config[:password]
             }
           }
       
-    api_call(xml)['quantity'].first.to_i
+    self.api_call(xml)['quantity'].first.to_i
   end
 end
