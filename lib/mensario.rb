@@ -31,12 +31,12 @@ class Mensario
     basic = { 'task' => ["#{task}"],
               'license' => {
                 'number' =>@@config[:license],
-                'user'   =>@@config[:user],
+                'user'   =>@@config[:username],
                 'pass'   =>@@config[:password]
               }
     }
-    
-    xml = XmlSimple.xml_out(basic.merge data, :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
+
+    xml = XmlSimple.xml_out(basic.merge(data), :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
     
     begin
       http = Net::HTTP.new(API_HOST, API_PORT)
@@ -47,18 +47,17 @@ class Mensario
     rescue Exception => e
       raise MensarioHttpException e.message
     end
-      
+
     result = XmlSimple.xml_in(response.body)
 
-    raise MensarioApiException.new(result['result']) unless result['result'] == 'OK'
-
+    raise MensarioApiException.new(result['result'].first) unless result['result'].first == 'OK'
     return result
   end
 
   def self.config(opts = {})
-    file = opts[:config] ||= File.expand_path('../../', __FILE__) + '/config/mensario.yml'
+    file = opts[:config] || File.expand_path('../../', __FILE__) + '/config/mensario.yml'
     config = YAML.load_file(file)
-    profile = opts[:profile] ||= :default
+    profile = opts[:profile] || :default
     
     unless config[profile]
       raise MensarioException, "No existe el perfil en el archivo de configuración #{file}"
@@ -79,16 +78,6 @@ class Mensario
   # Allows to consult the balance remaining of the license
   # @result [Fixnum] the balance remaining
   def self.balance
-    self.config unless @@config
-
-    xml = { 'task' => ['QUANT-QRY'],
-            'license' => {
-              'number'  => @@config[:license],
-              'user'    => @@config[:username],
-              'pass'    => @@config[:password]
-            }
-          }
-      
-    self.api_call(xml)['quantity'].first.to_i
+    self::api_call('QUANT-QRY')['quantity'].first.to_i
   end
 end
