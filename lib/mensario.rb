@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'mensario/exception'
 require 'xmlsimple'
 require 'net/http'
@@ -23,20 +24,47 @@ class Mensario
   #             'pass'   => @password
   #           }
   #   }
-  def self.api_call(data)
-    xml = XmlSimple.xml_out(data, :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
+  def self.api_call(task, data = {})
+    #Get config
+    self::config unless @@config
+
+    basic = { 'task' => ["#{task}"],
+              'license' => {
+                'number' =>@@config[:license],
+                'user'   =>@@config[:user],
+                'pass'   =>@@config[:password]
+              }
+    }
+    
+    xml = XmlSimple.xml_out(basic.merge data, :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
+    
+    begin
+      http = Net::HTTP.new(API_HOST, API_PORT)
+      http.use_ssl =  true
+      request = Net::HTTP::Post.new(API_PATH)
+      request.body = xml
+      response = http.request(request)
+    rescue Exception => e
+      raise MensarioHttpException e.message
+    end
       
-    http = Net::HTTP.new(API_HOST, API_PORT)
-    http.use_ssl =  true
-    request = Net::HTTP::Post.new(API_PATH)
-    request.body = xml
-    response = http.request(request)
-      
-    @response = XmlSimple.xml_in(response.body)
-    @status = @response['result'].first
+    result = XmlSimple.xml_in(response.body)
+
+    raise MensarioApiException.new(result['result']) unless result['result'] == 'OK'
+
+    return result
   end
 
-  def self.config(profile)
+  def self.config(opts = {})
+    file = opts[:config] ||= File.expand_path('../../', __FILE__) + '/config/mensario.yml'
+    config = YAML.load_file(file)
+    profile = opts[:profile] ||= :default
+    
+    unless config[profile]
+      raise MensarioException, "No existe el perfil en el archivo de configuración #{file}"
+    end
+
+    @@config = config[profile]
   end
     
   def self.send
