@@ -1,0 +1,2 @@
+class MensarioValidationException < MensarioException
+end

@@ -1,4 +1,6 @@
- $LOAD_PATH << File.expand_path('../../../lib', __FILE__)
+ PROJECT_ROOT = File.expand_path("../../..", __FILE__)
+ $LOAD_PATH << File.join(PROJECT_ROOT, "lib")
+
  require 'yaml'
  require 'mensario' 
  require 'tzinfo'
