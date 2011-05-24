@@ -48,7 +48,7 @@ Then /^the API should give us the request id$/ do
 end
 
 Then /^the API should give us the balance remaining$/ do
-  fail unless @result.class == Fixnum 
+  fail unless @result > 0
 end
 
 Given /^the request id in file "([^"]*)"$/ do |file|
