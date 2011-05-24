@@ -20,4 +20,4 @@ Scenario: The message id is incorrect
   Given the license number, username and password in the profile "default"
   And the id "4"
   When I do the destroy call
-  Then the API should response with "KO-UNK-MSGS" code
+  Then Mensario should raise a exception with status "KO-UNK-MSGS"

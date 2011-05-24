@@ -6,5 +6,5 @@ So that Mensario should return the balance remaining
 
 Scenario: The query has been done correctly
   Given the license number, username and password in the profile "default"
-  When I do the "balance" call
+  When I do the balance call
   Then the API should give us the balance remaining
