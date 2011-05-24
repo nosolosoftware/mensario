@@ -83,7 +83,18 @@ class Mensario
   def self.status(id)
   end
 
+  # Cancel the message which receives as a parameter
+  # @param [Fixnum] Message id to cancell
+  # @result [TrueClass, FalseClass] Return 'true' if message is cancelled
+  #   and 'false' otherwise
   def self.destroy(id)
+    xml = {
+      'msg' => {
+        'id' => [id]
+      }
+    }
+
+    self::api_call('MSG-CANC',xml)['cancelled'].nil?
   end
 
   # Allows to consult the balance remaining of the license
