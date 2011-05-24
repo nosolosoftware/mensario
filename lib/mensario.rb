@@ -80,7 +80,17 @@ class Mensario
   def self.send_message(opts = {})
   end
 
+  # Get the status of a sms
+  #
+  # @param [Integer] id Id of the sms
+  # @return [String] status code
   def self.status(id)
+    xml = { 'msg' => {
+              'id' => ["#{id}"]
+            }
+    }
+
+    self::api_call('MSG-QRY', xml)
   end
 
   # Cancel the message which receives as a parameter
