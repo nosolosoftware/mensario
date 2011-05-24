@@ -1,0 +1,23 @@
+Feature: Destroy request
+
+As an user that use this gem
+I want to cancel a sent message
+So that Mensario should return if the message is cancelled
+
+Scenario: The message can be cancelled
+  Given the license number, username and password in the profile "default"
+  And the id "poner id que pueda ser cancelado"
+  When I do the destroy call
+  Then the API should tell us that the message is cancelled
+
+Scenario: The message can't be cancelled
+  Given the license number, username and password in the profile "default"
+  And the id "poner id que no se pueda cancelar"
+  When I do the destroy call
+  Then the API should tell us that the message can't be cancelled
+
+Scenario: The message id is incorrect
+  Given the license number, username and password in the profile "default"
+  And the id "4"
+  When I do the destroy call
+  Then the API should response with "KO-UNK-MSGS" code
