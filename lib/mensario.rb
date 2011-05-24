@@ -73,9 +73,9 @@ class Mensario
   end
 
   # Cancel the message which receives as a parameter
-  # @param [Fixnum] Message id to cancell
-  # @result [TrueClass, FalseClass] Return 'true' if message is cancelled
-  #   and 'false' otherwise
+  # @param [Integer] Message id to cancell
+  # @return [Boolean] Return 'true' if message is cancelled
+  #   and 'false' if the message can't be cancelled
   def self.destroy(id)
     xml = {
       'msg' => {
@@ -87,7 +87,7 @@ class Mensario
   end
 
   # Allows to consult the balance remaining of the license
-  # @result [Fixnum] the balance remaining
+  # @result [Integer] the balance remaining
   def self.balance
     self::api_call('QUANT-QRY')['quantity'].first.to_i
   end
