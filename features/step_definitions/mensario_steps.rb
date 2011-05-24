@@ -14,31 +14,6 @@ When /^I do the "(.*)" call$/ do |call|
   end
 end
 
-Then /^the API should response with "(.*)" code$/ do |code|
-  fail unless @message.status == code
-
-  if @message.status != Mensario::Status::OK
-    fail unless @exception.status == @message.status
-  end
-end
-
-Given /^a empty timezone$/ do
-  @message.timezone = ''
-end
-
-Then /^the timestamp should be correct$/ do
-  # create time in specified zone
-  tz = TZInfo::Timezone.get(@message.timezone != '' ? @message.timezone : 'UTC' )
-  # Parse the response time
-  time = @message.response['timestamp'].first.match(/^\d{8}(\d{2})/)[1].to_i
-  # Validate
-  fail unless (tz.now.hour.to_i - time).abs < 1800
-end
-
-Given /^a "(.*)" timezone$/ do |timezone|
-  @message.timezone = timezone
-end
-
 When /^I do the send_message call$/ do
   begin
     @result = @message.send_message(@prefix, @phone, @body)
@@ -65,11 +40,6 @@ end
 
 Then /^the API should give us the balance remaining$/ do
   fail unless @result > 0
-end
-
-Given /^the request id in file "([^"]*)"$/ do |file|
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  @request_id = YAML.load(open(file))[:request]
 end
 
 Then /^the API should give us the status code "([^"]*)"$/ do |code|
