@@ -14,16 +14,10 @@ class Mensario
   @@config
 
   # Do de api call with all data and process the response
-  # @param [Hash] data hash containing all data
-  # @result [Hash] response hash
-  # @example xml
-  #   xml = { 'task' => ['SYNC'],
-  #           'license' => {
-  #             'number' => @license,
-  #             'user'   => @username,
-  #             'pass'   => @password
-  #           }
-  #   }
+  #
+  # @param [String] task Name of api task 
+  # @param [Hash] data Hash containing all data
+  # @return [Hash] response hash
   def self.api_call(task, data = {})
     #Get config
     self::config unless @@config
@@ -54,6 +48,11 @@ class Mensario
     return result
   end
 
+  # Load configuration and save it in @@config
+  #
+  # @param [Hash] opts Options
+  # @option opts :config ('config/mensario.yml') Path to the configuration file
+  # @option opts :profile (:default) Profile in configuration to load
   def self.config(opts = {})
     file = opts[:config] || File.expand_path('../../', __FILE__) + '/config/mensario.yml'
     config = YAML.load_file(file)
@@ -66,7 +65,19 @@ class Mensario
     @@config = config[profile]
   end
     
-  def self.send_message
+  # Send a sms
+  #
+  # @param [Hash] opts Options
+  # @option opts :sender Name of who send the sms
+  # @option opts :text Content of sms
+  # @option opts :date Ruby Time object with the send date
+  # @option opts :code Country code of mobile
+  # @option opts :phone Telephone number to send the sms
+  #
+  # All options are required
+  #
+  # @return [Integer] Id of sms
+  def self.send_message(opts = {})
   end
 
   def self.status(id)
