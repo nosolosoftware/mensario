@@ -59,7 +59,7 @@ class Mensario
     profile = opts[:profile] || :default
     
     unless config[profile]
-      raise MensarioException, "Profile doesn't exists in configuration file #{file}"
+      raise MensarioException, "No existe el perfil en el archivo de configuración #{file}"
     end
 
     @@config = config[profile]
