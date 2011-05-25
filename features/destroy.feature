@@ -12,7 +12,7 @@ Scenario: The message can be cancelled
 
 Scenario: The message can't be cancelled
   Given the license number, username and password in the profile "default"
-  And the id "poner id que no se pueda cancelar"
+  And the id "46839223"
   When I do the destroy call
   Then the API should tell us that the message can't be cancelled
 
