@@ -89,9 +89,13 @@ Then /^Mensario should raise a exception with status "(.*)"$/ do |status|
 end
 
 Then /^the API should tell us that the message is cancelled$/ do
-  pending # express the regexp above with the code you wish you had
+  fail unless @result == true
 end
 
 Then /^the API should tell us that the message can't be cancelled$/ do
-  pending # express the regexp above with the code you wish you had
+  fail unless @result == false
+end
+
+Then /^Mensario should response with a sms number$/ do
+  fail unless @result > 0
 end
