@@ -27,11 +27,23 @@ Given /^send time "(\d+)"\/"(\d+)"\/"(\d+)" "(\d+)":"(\d+)":"(\d+)"$/ do |day, m
   @date = Time.new year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i
 end
 
+Given /^a new message id$/ do
+  params = {
+      :sender => 'Calamar',
+      :text => 'Yo tambien pienso que Bob Esponja es muy absorbente xD',
+      :date => (Time.new 2011, 12, 12, 12, 12, 12),
+      :code => 34,
+      :phone => 685467890,
+      :timezone => 'Europe/Madrid'
+    }
+
+    @id = Mensario::send_message(params)
+end
+
 When /^I do the "(.*)" call$/ do |call|
   begin
     @result = Mensario.send(call.to_sym)
   rescue MensarioException => e
-    puts e
     @exception = e
   end
 end
@@ -54,6 +66,9 @@ end
 
 When /^I do the destroy call$/ do
   begin
+    # Create a sms to destroy
+    
+
     @result = Mensario::destroy(@id)
   rescue MensarioException => e
     @exception = e
@@ -67,10 +82,14 @@ When /^I do the send_message call$/ do
       :text => @text,
       :date => @date,
       :code => @code,
-      :phone => @phone
+      :phone => @phone,
+      :timezone => @timezone
     }
 
     @result = Mensario::send_message(params)
+    
+    # Destroy sms after send (test purpose only)
+    Mensario::destroy(@result)
   rescue MensarioException => e
     @exception = e
   end
