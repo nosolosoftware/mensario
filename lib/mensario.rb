@@ -59,7 +59,7 @@ class Mensario
     profile = opts[:profile] || :default
     
     unless config[profile]
-      raise MensarioException, "No existe el perfil en el archivo de configuración #{file}"
+      raise MensarioException, "Profile doesn't exist in configuration file #{file}"
     end
 
     @@config = config[profile]
@@ -70,11 +70,11 @@ class Mensario
   # @param [Hash] opts Options
   # @option opts :sender Name of who send the sms
   # @option opts :text Content of sms
-  # @option opts :date Ruby Time object with the send date.
+  # @option opts :date ('now') Ruby Time object with the send date.
   #   Message is sent inmediately if :date is undefined
   # @option opts :code Country code of mobile
   # @option opts :phone Telephone number to send the sms
-  # @option opts :timezone Time of the send. "GMT0" by default
+  # @option opts :timezone ('') Time of the send.
   #
   # All options are required except :date and :timezone
   #
