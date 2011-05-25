@@ -90,7 +90,7 @@ class Mensario
             }
     }
 
-    self::api_call('MSG-QRY', xml)
+    self::api_call('MSG-QRY', xml)['status'].first['cod']
   end
 
   # Cancel the message which receives as a parameter
@@ -104,7 +104,7 @@ class Mensario
       }
     }
 
-    self::api_call('MSG-CANC',xml)['cancelled'].nil?
+    !self::api_call('MSG-CANC',xml)['cancelled'].nil?
   end
 
   # Allows to consult the balance remaining of the license
