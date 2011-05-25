@@ -1,13 +1,36 @@
 #encoding: utf-8
+
+# Copyright 2011 NoSoloSoftware
+
+# This file is part of Runnable.
+# 
+# Runnable is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Runnable is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Runnable.  If not, see <http://www.gnu.org/licenses/>.
+
 require 'mensario/exception'
 require 'xmlsimple'
 require 'net/http'
 require 'net/https'
 
+# A class that allow us to send a sms message through Mensario SMS Service
 class Mensario
-  # Api url to do calls
+  # Api host
   API_HOST = 'es.servicios.mensario.com'
+  
+  # Api port
   API_PORT = 443
+  
+  #Api path
   API_PATH = '/sem/api/api.do'
 
   # Store config
@@ -127,7 +150,7 @@ class Mensario
   end
 
   # Allows to consult the balance remaining of the license
-  # @result [Integer] the balance remaining
+  # @return [Integer] the balance remaining
   def self.balance
     self::api_call('QUANT-QRY')['quantity'].first.to_i
   end

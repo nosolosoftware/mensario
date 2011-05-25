@@ -1,3 +1,4 @@
+# Exception for raise errors from api
 class MensarioApiException < MensarioException
   # Response code from API
   attr_reader :status
