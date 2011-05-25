@@ -70,14 +70,33 @@ class Mensario
   # @param [Hash] opts Options
   # @option opts :sender Name of who send the sms
   # @option opts :text Content of sms
-  # @option opts :date Ruby Time object with the send date
+  # @option opts :date Ruby Time object with the send date.
+  #   Message is sent inmediately if :date is undefined
   # @option opts :code Country code of mobile
   # @option opts :phone Telephone number to send the sms
+  # @option opts :timezone Time of the send. "GMT0" by default
   #
-  # All options are required
+  # All options are required except :date and :timezone
   #
   # @return [Integer] Id of sms
   def self.send_message(opts = {})
+    date = opts[:date] || '00000000000000'
+    date = date.to_s.gsub(/\s|[:-]/, '')[0..13] if date.class == Time
+
+    xml = {
+      'timezone' => [ opts[:timezone] || '' ],
+      'msg' => {
+        'sender' => [ opts[:sender] ],
+        'text' => [ opts[:text]  ],
+        'date' => [ date ],
+        'rcp' => {
+          'cod' => opts[:code],
+          'phn' => opts[:phone]
+        }
+      }
+    }
+
+    self::api_call('SEND', xml)['msg'].first['id'].first.to_i
   end
 
   # Get the status of a sms
