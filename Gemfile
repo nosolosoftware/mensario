@@ -8,5 +8,5 @@ group :development do
   gem 'rake', '~> 0.8.7' # Run tasks
   gem 'cucumber', '~> 0.10.2' # DBD tests
   gem 'rspec', '~> 2.6.0' # RSpec tests
-  gem 'tzinfo', '~> 0.3.27' # TZinfo to check timezones
+  gem 'yard', '~> 0.7.1' # Docs
 end
