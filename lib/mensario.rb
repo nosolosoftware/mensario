@@ -31,7 +31,7 @@ class Mensario
     }
 
     xml = XmlSimple.xml_out(basic.merge(data), :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
-    
+
     begin
       http = Net::HTTP.new(API_HOST, API_PORT)
       http.use_ssl =  true
@@ -123,7 +123,7 @@ class Mensario
       }
     }
 
-    !self::api_call('MSG-CANC',xml)['cancelled'].nil?
+    self::api_call('MSG-CANC',xml)['cancel'].first.to_i == 1
   end
 
   # Allows to consult the balance remaining of the license
