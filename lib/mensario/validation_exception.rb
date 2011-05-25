@@ -1,2 +1,0 @@
-class MensarioValidationException < MensarioException
-end
