@@ -1,3 +1,6 @@
 Gemfile.lock
 *.swp
 config/*
+.DS_Store
+.yardoc
+

@@ -1,3 +1,4 @@
+# Generic Mensario Exception
 class MensarioException < Exception  
 end
 

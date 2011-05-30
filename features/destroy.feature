@@ -6,7 +6,7 @@ So that Mensario should return if the message is cancelled
 
 Scenario: The message can be cancelled
   Given the license number, username and password in the profile "default"
-  And the id "poner id que pueda ser cancelado"
+  And a new message id
   When I do the destroy call
   Then the API should tell us that the message is cancelled
 
