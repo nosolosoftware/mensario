@@ -9,4 +9,5 @@ group :development do
   gem 'cucumber', '~> 0.10.2' # DBD tests
   gem 'rspec', '~> 2.6.0' # RSpec tests
   gem 'yard', '~> 0.7.1' # Docs
+  gem 'rdiscount', '~> 1.6.8' # For use markdown in yard
 end
