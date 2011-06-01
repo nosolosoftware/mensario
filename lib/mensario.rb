@@ -22,6 +22,7 @@ require 'mensario/exception'
 require 'xmlsimple'
 require 'net/http'
 require 'net/https'
+require 'uri'
 
 # A class that allow us to send a sms message through Mensario SMS Service
 class Mensario
@@ -78,7 +79,7 @@ class Mensario
   # @option opts :config ('config/mensario.yml') Path to the configuration file
   # @option opts :profile (:default) Profile in configuration to load
   def self.config(opts = {})
-    file = opts[:config] || File.expand_path('../../', __FILE__) + '/config/mensario.yml'
+    file = opts[:config] || Dir.getwd + '/config/mensario.yml'
     config = YAML.load_file(file)
     profile = opts[:profile] || :default
     
@@ -111,7 +112,7 @@ class Mensario
       'timezone' => [ opts[:timezone] || '' ],
       'msg' => {
         'sender' => [ opts[:sender] ],
-        'text' => [ opts[:text]  ],
+        'text' => [ URI.encode(opts[:text]) ],
         'date' => [ date ],
         'rcp' => {
           'cod' => opts[:code],
