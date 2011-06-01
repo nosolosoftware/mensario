@@ -24,11 +24,15 @@ The YAML file expects to have the following scheme:
 If the config file is located in another location we have available the method ```Mensario::config``` in order to use some different configuration. The config options are:
 
 * :config -> Path to alternative config file
-* :profile -> Profile to load
+* :profile -> Profile to load. Profile by default is :default
      
-For example, using an alternative config file
+For example, using an alternative config file:
   
     Mensario::config :config => /path/to/file.yml
+
+Another example, using an alternative profile:
+
+    Mensario::config :profile => :otherprofile
 
 
 ## Sending a message
@@ -45,7 +49,7 @@ To send a message, we need some options:
 All options are required except ```:date``` and ```:timezone```:
 
 * If ```:date``` is undefined the message is sent inmediately.
-* If ```:timezone``` is undefined Mensario will use GMT0
+* If ```:timezone``` is undefined Mensario will use GMT+0
 
 If a message is sent correctly the method return its id.
 
@@ -65,9 +69,17 @@ An example may be something like this:
 
 To check the status of a messege we need to use ```Mensario::status``` with id of message that we want to consult. All states of a message are in Mensarios API.
 
+For example:
+
+    Mensario::status 12345678
+
 ## Cancel a programmed message
 
-Only messages whose state is "CMS-PEND" can be cancelled. The method ```Mensario::destroy``` cancels them.
+Only messages whose status is "CMS-PEND" can be cancelled. The method ```Mensario::destroy``` cancels them.
+
+For example:
+
+    Mensario::destroy 12345678
 
 ## Handle errors
 
