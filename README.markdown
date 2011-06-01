@@ -33,12 +33,53 @@ For example, using an alternative config file
 
 ## Sending a message
 
+To send a message, we need some options:
+
+* :sender -> Name of who send de message
+* :text -> Content of message
+* :code -> Country code of mobile
+* :phone -> Telephone number to send de message
+* :date -> Ruby Time object with the send date
+* :timezone -> Timezone of the send
+
+All options are required except ```:date``` and ```:timezone```:
+
+* If ```:date``` is undefined the message is sent inmediately.
+* If ```:timezone``` is undefined Mensario will use GMT0
+
+If a message is sent correctly the method return its id.
+
+An example may be something like this:
+
+    opts = {
+      :sender => 'Myself'
+      :text => 'My message'
+      :code => 34
+      :phone => 123456789
+      :timezone => 'Europe/Madrid'
+    }
+
+    Mensario::send_message opts
+
 ## Get the status of message
 
+To check the status of a messege we need to use ```Mensario::status``` with id of message that we want to consult. All states of a message are in Mensarios API.
+
 ## Cancel a programmed message
+
+Only messages whose state is "CMS-PEND" can be cancelled. The method ```Mensario::destroy``` cancels them.
 
 ## Handle errors
 
 If a request error occurs or the api responds with an error, Mensario throw an exception of type ```MensarioException```. Depending on the type of error, there are several exceptions that inherit from ```MensarioException```:
 
 * ```MensarioApiException```. For errors sent by the api. Has the property ```status``` that contains the error code returned by Mensario.
+* ```MensarioHttpException```. If a problem occurs with the HTTP request.
+
+# About
+Mensario is a gem developed by [NoSoloSoftware](http://nosolosoftware.biz).
+
+# License
+Mensario is Copyright 2011 NoSoloSoftware, it is free software.
+
+Mensario is distributed under GPLv3 license. More details can be found at COPYING file.

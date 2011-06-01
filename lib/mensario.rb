@@ -2,20 +2,20 @@
 
 # Copyright 2011 NoSoloSoftware
 
-# This file is part of Runnable.
+# This file is part of Mensario.
 # 
-# Runnable is free software: you can redistribute it and/or modify
+# Mensario is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Runnable is distributed in the hope that it will be useful,
+# Mensario is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Runnable.  If not, see <http://www.gnu.org/licenses/>.
+# along with Mensario.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'yaml'
 require 'mensario/exception'
@@ -99,7 +99,7 @@ class Mensario
   #   Message is sent inmediately if :date is undefined
   # @option opts :code Country code of mobile
   # @option opts :phone Telephone number to send the sms
-  # @option opts :timezone ('') Time of the send.
+  # @option opts :timezone ('') Timezone of the send.
   #
   # All options are required except :date and :timezone
   #
