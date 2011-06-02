@@ -3,4 +3,4 @@ Gemfile.lock
 config/*
 .DS_Store
 .yardoc
-
+features/recipient.yml
