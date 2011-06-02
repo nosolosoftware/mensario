@@ -22,7 +22,8 @@ Gem::Specification.new do |s|
     "lib/mensario.rb",
     "lib/mensario/api_exception.rb",
     "lib/mensario/exception.rb",
-    "lib/mensario/http_exception.rb"
+    "lib/mensario/http_exception.rb",
+    "mensario.gemspec"
   ]
   s.homepage = %q{http://github.com/nosolosoftware/mensario}
   s.licenses = ["GPL-3"]
