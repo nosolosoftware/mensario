@@ -1,149 +1,159 @@
-require 'mensario/status'
+#encoding: utf-8
+
+# Copyright 2011 NoSoloSoftware
+
+# This file is part of Mensario.
+# 
+# Mensario is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Mensario is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Mensario.  If not, see <http://www.gnu.org/licenses/>.
+
+require 'yaml'
 require 'mensario/exception'
 require 'xmlsimple'
 require 'net/http'
 require 'net/https'
+require 'uri'
 
-module Mensario
-  class Mensario
-    
-    # Api url to do calls
-    API_HOST = 'es.servicios.mensario.com'
-    API_PORT = 443
-    API_PATH = '/sem/api/api.do'
+# A class that allow us to send a sms message through Mensario SMS Service
+class Mensario
+  # Api host
+  API_HOST = 'es.servicios.mensario.com'
+  
+  # Api port
+  API_PORT = 443
+  
+  #Api path
+  API_PATH = '/sem/api/api.do'
 
-    # Config data for connect to API service
-    attr_accessor :license
-    attr_accessor :username
-    attr_accessor :password
+  # Store config
+  @@config
 
-    # Timezone for use in API
-    attr_accessor :timezone
- 
-    # Status of the response
-    attr_reader :status
+  # Do de api call with all data and process the response
+  #
+  # @param [String] task Name of api task 
+  # @param [Hash] data Hash containing all data
+  # @return [Hash] response hash
+  def self.api_call(task, data = {})
+    #Get config
+    self::config unless @@config
 
-    attr_reader :response
+    basic = { 'task' => ["#{task}"],
+              'license' => {
+                'number' =>@@config[:license],
+                'user'   =>@@config[:username],
+                'pass'   =>@@config[:password]
+              }
+    }
 
-    def initialize
-      yield self
-    end
+    xml = XmlSimple.xml_out(basic.merge(data), :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
 
-    # Do de api call with all data and process the response
-    # @param [Hash] data hash containing all data
-    # @result [Hash] response hash
-    # @example xml
-    #   xml = { 'task' => ['SYNC'],
-    #           'license' => {
-    #             'number' => @license,
-    #             'user'   => @username,
-    #             'pass'   => @password
-    #           }
-    #   }
-    def api_call(data)
-      xml = XmlSimple.xml_out(data, :rootname => 'api', :XmlDeclaration => '<?xml version="1.0" encoding="UTF-8"?>') 
-      
+    begin
       http = Net::HTTP.new(API_HOST, API_PORT)
       http.use_ssl =  true
       request = Net::HTTP::Post.new(API_PATH)
       request.body = xml
       response = http.request(request)
-      
-      @response = XmlSimple.xml_in(response.body)
-      @status = @response['result'].first
-      raise MensarioException.new(@status) unless @status == Status::OK
-      @response
+    rescue Exception => e
+      raise MensarioHttpException e.message
     end
+
+    result = XmlSimple.xml_in(response.body)
+
+    raise MensarioApiException.new(result['result'].first) unless result['result'].first == 'OK'
+    return result
+  end
+
+  # Load configuration and save it in @@config
+  #
+  # @param [Hash] opts Options
+  # @option opts :config ('config/mensario.yml') Path to the configuration file
+  # @option opts :profile (:default) Profile in configuration to load
+  def self.config(opts = {})
+    file = opts[:config] || Dir.getwd + '/config/mensario.yml'
+    config = YAML.load_file(file)
+    profile = opts[:profile] || :default
     
-    # Do the synchronize method of api
-    #
-    # @result [Integer] timestamp in the specified timezone
-    def synchronize
-      xml = { 'task' => ['SYNC'],
-              'license'  => {
-                  'number' => @license,
-                  'user'   => @username,
-                  'pass'   => @password
-              },
-              'timezone' => [@timezone]
+    unless config[profile]
+      raise MensarioException, "Profile doesn't exist in configuration file #{file}"
+    end
+
+    @@config = config[profile]
+  end
+    
+  # Send a sms
+  #
+  # @param [Hash] opts Options
+  # @option opts :sender Name of who send the sms
+  # @option opts :text Content of sms
+  # @option opts :date ('now') Ruby Time object with the send date.
+  #   Message is sent inmediately if :date is undefined
+  # @option opts :code Country code of mobile
+  # @option opts :phone Telephone number to send the sms
+  # @option opts :timezone ('') Timezone of the send.
+  #
+  # All options are required except :date and :timezone
+  #
+  # @return [Integer] Id of sms
+  def self.send_message(opts = {})
+    date = opts[:date] || '00000000000000'
+    date = date.to_s.gsub(/\s|[:-]/, '')[0..13] if date.class == Time
+
+    xml = {
+      'timezone' => [ opts[:timezone] || '' ],
+      'msg' => {
+        'sender' => [ opts[:sender] ],
+        'text' => [ URI.encode(opts[:text]) ],
+        'date' => [ date ],
+        'rcp' => {
+          'cod' => opts[:code],
+          'phn' => opts[:phone]
+        }
       }
+    }
 
-      api_call(xml)['timestamp']
-    end
+    self::api_call('SEND', xml)['msg'].first['id'].first.to_i
+  end
 
-    def send_message()
-    end
-
-    # Allows to consult the quantity remaining
-    # @result [Fixnum] the quantity remaining of the license
-    def quantity
-      xml = { 'task' => ['QUANT-QRY'],
-              'license' => {
-                'number'  => @license,
-                'user'    => @username,
-                'pass'    => @password
-              }
+  # Get the status of a sms
+  #
+  # @param [Integer] id Id of the sms
+  # @return [String] status code
+  def self.status(id)
+    xml = { 'msg' => {
+              'id' => ["#{id}"]
             }
-      
-      api_call(xml)['quantity'].first.to_i
-    end
+    }
 
-    # Allows to consult the status, quantity and type of one or
-    # more licenses
-    # @param [Array] hash array with extra licenses
-    # @result [Array] Response of the API
-    # @example extra licenses
-    #   extra = [
-    #     { 'number' => number-1, 'user' => user-1, 'pass' => pass-1 },
-    #       'number' => number-2, 'user' => user-2, 'pass' => pass-2 },
-    #                                 .
-    #                                 .
-    #                                 .
-    #       'number' => number-n, 'user' => user-n, 'pass' => pass-n }
-    #   [
-    # @example response
-    #   [
-    #     { "number" => "LSTD020801EUHNKOQIHJ", "status" => ["OK"], "quantity"=> ["1000"], "type" => ["STD"] },
-    #     { "number" => "STD000001EAAAIIOOLP",  "status" => ["KO-INV"] } 
-    #   ]
-    def license_query(opts = [])
-      licenses = {
-        'license' => [{
-          'number'  => @license,
-          'user'    => @username,
-          'pass'    => @password
-        }]
+    self::api_call('MSG-QRY', xml)['status'].first['cod']
+  end
+
+  # Cancel the message which receives as a parameter
+  # @param [Integer] Message id to cancell
+  # @return [Boolean] Return 'true' if message is cancelled
+  #   and 'false' if the message can't be cancelled
+  def self.destroy(id)
+    xml = {
+      'msg' => {
+        'id' => [id]
       }
+    }
 
-      opts.length.times do |i|
-        licenses['license'] << opts[i]
-      end
+    self::api_call('MSG-CANC',xml)['cancel'].first.to_i == 1
+  end
 
-      xml = { 'task' => ['LIC-QRY'],
-              'licenses' => licenses
-      }
-
-      api_call(xml)['licenses'].first['license']
-    end
-
-    # Allows to check the state of a request
-    # @param [Fixnum] request id
-    # @result [Array] Response of the API
-    # @example response
-    #   [
-    #     { "cod" => "CMS-PEND", "id" => "12345678" }
-    #   ]
-    def request_query(request_id)
-      xml = { 'task' => ['REQU-QRY'],
-              'license' => {
-                'number'    => @license,
-                'user'      => @username,
-                'pass'      => @password
-              },
-              'request' => [request_id]
-            }
-
-      api_call(xml)['status']
-    end
+  # Allows to consult the balance remaining of the license
+  # @return [Integer] the balance remaining
+  def self.balance
+    self::api_call('QUANT-QRY')['quantity'].first.to_i
   end
 end

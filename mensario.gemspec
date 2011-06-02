@@ -12,9 +12,17 @@ Gem::Specification.new do |s|
   s.date = %q{2011-06-02}
   s.description = %q{This gem allow us to send, check status and destroy sms using the Mensario service api}
   s.email = ["jaranda@nosolosoftware.biz", "jgalisteo@nosolosoftware.biz"]
+  s.extra_rdoc_files = [
+    "README.markdown"
+  ]
   s.files = [
+    "COPYING",
+    "README.markdown",
+    "VERSION",
     "lib/mensario.rb",
+    "lib/mensario/api_exception.rb",
     "lib/mensario/exception.rb",
+    "lib/mensario/http_exception.rb",
     "mensario.gemspec"
   ]
   s.homepage = %q{http://github.com/nosolosoftware/mensario}

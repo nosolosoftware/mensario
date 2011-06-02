@@ -1,5 +1,6 @@
 Gemfile.lock
-features/auth*
 *.swp
-features/recipient*
-features/request_id.yml
+config/*
+.DS_Store
+.yardoc
+features/recipient.yml

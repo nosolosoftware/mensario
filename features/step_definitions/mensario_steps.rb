@@ -1,131 +1,121 @@
-Given /^the license, username and password in file "(.*)"$/ do |file|
-  # Load config data from files
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  if File.exist? file
-    @data = YAML.load_file(file)
-  else
-    @data = {:license => '', :username => '', :password => ''}
-  end
+Given /^the license number, username and password in the profile "(.*)"$/ do |profile|
+  Mensario.config(:profile => profile.to_sym)
+end
 
-  @message = Mensario::Mensario.new do |c|
-    c.license = @data[:license]
-    c.username = @data[:username]
-    c.password = @data[:password]
-  end
+Given /^the id "([^"]*)"$/ do |id|
+  @id = id
+end
+
+Given /^"([^"]*)" as sender$/ do |sender|
+  @sender = sender
+end
+
+Given /^"([^"]*)" as text$/ do |text|
+  @text = text
+end
+
+Given /^(\d+) as prefix and "([^"]*)" phone in file "([^"]*)"$/ do |code, status, file|
+  file = Dir.getwd + '/features/' + file
+  @phone = YAML.load_file(file)[status.to_sym]
+  @code = code
+end
+
+Given /^"([^"]*)" as timezone$/ do |timezone|
+  @timezone = timezone
+end
+
+Given /^a send time$/ do
+  @date = Time.new + 3600*24
+end
+
+Given /^a new message id$/ do
+  params = {
+      :sender => 'Calamar',
+      :text => 'Yo tambien pienso que Bob Esponja es muy absorbente xD',
+      :date => (Time.new + 3600*24),
+      :code => 34,
+      :phone => 685467890,
+      :timezone => 'Europe/Madrid'
+    }
+
+    @id = Mensario::send_message(params)
 end
 
 When /^I do the "(.*)" call$/ do |call|
   begin
-    @result = @message.send(call.to_sym)
-  rescue Mensario::MensarioException => e
+    @result = Mensario.send(call.to_sym)
+  rescue MensarioException => e
     @exception = e
   end
 end
 
-Then /^the API should response with "(.*)" code$/ do |code|
-  fail unless @message.status == code
-
-  if @message.status != Mensario::Status::OK
-    fail unless @exception.status == @message.status
+When /^I do the status call$/ do
+  begin
+    @result = Mensario::status(@id)
+  rescue MensarioException => e
+    @exception = e
   end
 end
 
-Given /^a empty timezone$/ do
-  @message.timezone = ''
+When /^I do the balance call$/ do
+  begin
+    @result = Mensario::balance
+  rescue MensarioException => e
+    @exception = e
+  end
 end
 
-Then /^the timestamp should be correct$/ do
-  # create time in specified zone
-  tz = TZInfo::Timezone.get(@message.timezone != '' ? @message.timezone : 'UTC' )
-  # Parse the response time
-  time = @message.response['timestamp'].first.match(/^\d{8}(\d{2})/)[1].to_i
-  # Validate
-  fail unless (tz.now.hour.to_i - time).abs < 1800
-end
+When /^I do the destroy call$/ do
+  begin
+    # Create a sms to destroy
+    
 
-Given /^a "(.*)" timezone$/ do |timezone|
-  @message.timezone = timezone
-end
-
-Given /^the phone number in the file "([^"]*)"$/ do |file|
-  # Load config data from files
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  @phone = YAML.load(open(file))[:recipient]
-end
-
-Given /^the prefix "([^"]*)"$/ do |arg|
-  @prefix = arg
-end
-
-Given /^the text body$/ do
-  @body = 'Probando, probando'
+    @result = Mensario::destroy(@id)
+  rescue MensarioException => e
+    @exception = e
+  end
 end
 
 When /^I do the send_message call$/ do
   begin
-    @result = @message.send_message(@prefix, @phone, @body)
-  rescue Mensario::MensarioException => e
-    @exception = e
-  end
-end
-
-Then /^the API should give us the request id$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
-Then /^the API should give us the quantity remaining$/ do
-  fail unless @result.class == Fixnum 
-end
-
-Given /^the request id in file "([^"]*)"$/ do |file|
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  @request_id = YAML.load(open(file))[:request]
-end
-
-When /^I do the request_query call$/ do
-  begin
-    @result = @message.request_query(@request_id)
-  rescue Mensario::MensarioException => e
-    @exception = e
-  end
-end
-
-Then /^the API should give us the status code of the request$/ do
-  fail unless @result
-end
-
-Given /^a wrong request id$/ do
-  @request_id = 4
-end
-
-Then /^the status code should be "([^"]*)"$/ do |status|
-  fail unless @result.first['status'].first == status
-end
-
-Then /^the API should give us the type and quantity of the license$/ do
-  fail unless @result.first['quantity']
-  fail unless @result.first['type']
-end
-
-Given /^an extra license in file "([^"]*)"$/ do |file|
-  file = File.expand_path('../../', __FILE__) + '/' + file
-  @extra = YAML.load(open(file))
-  @extra = [
-    { 'number' => @extra[:license],
-      'user' => @extra[:username],
-      'pass' => @extra[:password]
+    params = {
+      :sender => @sender,
+      :text => @text,
+      :date => @date,
+      :code => @code,
+      :phone => @phone,
+      :timezone => @timezone
     }
-  ]
-end
 
-When /^I do the license_query call with parameters$/ do
-  begin
-    @result = @message.license_query(@extra)
-  rescue Mensario::MensarioException => e
+    @result = Mensario::send_message(params)
+    
+    # Destroy sms after send (test purpose only)
+    Mensario::destroy(@result)
+  rescue MensarioException => e
     @exception = e
   end
 end
 
-Then /^the response should be an Array with 2 or more fields$/ do
-  fail unless @result.length > 1
+Then /^the API should give us the balance remaining$/ do
+  fail unless @result > 0
+end
+
+Then /^the API should give us the status code "([^"]*)"$/ do |code|
+  fail unless @result == code
+end
+
+Then /^Mensario should raise a exception with status "(.*)"$/ do |status|
+  fail unless @exception.status == status
+end
+
+Then /^the API should tell us that the message is cancelled$/ do
+  fail unless @result == true
+end
+
+Then /^the API should tell us that the message can't be cancelled$/ do
+  fail unless @result == false
+end
+
+Then /^Mensario should response with a sms number$/ do
+  fail unless @result > 0
 end
