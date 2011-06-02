@@ -14,24 +14,25 @@ Given /^"([^"]*)" as text$/ do |text|
   @text = text
 end
 
-Given /^(\d+) as prefix and (\d+) as phone$/ do |code, phone|
+Given /^(\d+) as prefix and "([^"]*)" phone in file "([^"]*)"$/ do |code, status, file|
+  file = Dir.getwd + '/features/' + file
+  @phone = YAML.load_file(file)[status.to_sym]
   @code = code
-  @phone = phone
 end
 
 Given /^"([^"]*)" as timezone$/ do |timezone|
   @timezone = timezone
 end
 
-Given /^send time "(\d+)"\/"(\d+)"\/"(\d+)" "(\d+)":"(\d+)":"(\d+)"$/ do |day, month, year, hour, min, sec|
-  @date = Time.new year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i
+Given /^a send time$/ do
+  @date = Time.new + 3600*24
 end
 
 Given /^a new message id$/ do
   params = {
       :sender => 'Calamar',
       :text => 'Yo tambien pienso que Bob Esponja es muy absorbente xD',
-      :date => (Time.new 2011, 12, 12, 12, 12, 12),
+      :date => (Time.new + 3600*24),
       :code => 34,
       :phone => 685467890,
       :timezone => 'Europe/Madrid'
