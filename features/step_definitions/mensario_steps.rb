@@ -52,6 +52,7 @@ end
 When /^I do the status call$/ do
   begin
     @result = Mensario::status(@id)
+    Mensario.destroy @id
   rescue MensarioException => e
     @exception = e
   end

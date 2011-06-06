@@ -6,7 +6,7 @@ So that Mensario should return status code
 
 Scenario: The message id is correct
   Given the license number, username and password in the profile "default"
-  And the id "46189571"
+  And a new message id
   When I do the status call
   Then the API should give us the status code "CMS-PEND"
 
