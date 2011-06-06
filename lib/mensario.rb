@@ -52,10 +52,10 @@ class Mensario
   # @param [Array] params Params in the call
   # @param [Block] block Block code in method
   def self.method_missing( method, *params, &block )
-    if params.length == 1
+    raise NoMethodError, "undefined method #{method}" unless [:license, :username, :password].include? method
+    raise ArgumentError, "wrong number of arguments(#{params.length} for 1)" unless params.length == 1
       @@config = {} unless @@config
-      @@config[method] = params[0] if [:license, :username, :password].include? method
-    end
+      @@config[method] = params[0]
   end
 
   # Set configuration parameters license, username and password 
