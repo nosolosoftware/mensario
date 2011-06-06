@@ -36,7 +36,7 @@ class Mensario
   API_PATH = '/sem/api/api.do'
 
   # Store config
-  @@config
+  @@config = {}
 
   # Use undefined methods to set the values of license number,
   # username or password
@@ -54,7 +54,6 @@ class Mensario
   def self.method_missing( method, *params, &block )
     raise NoMethodError, "undefined method #{method}" unless [:license, :username, :password].include? method
     raise ArgumentError, "wrong number of arguments(#{params.length} for 1)" unless params.length == 1
-      @@config = {} unless @@config
       @@config[method] = params[0]
   end
 
@@ -79,7 +78,7 @@ class Mensario
   # @return [Hash] response hash
   def self.api_call(task, data = {})
     #Get config
-    self::config unless @@config
+    self::config unless @@config[:license] && @config[:username] && @@config[:password]
 
     basic = { 'task' => ["#{task}"],
               'license' => {
