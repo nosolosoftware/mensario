@@ -38,6 +38,40 @@ class Mensario
   # Store config
   @@config
 
+  # Use undefined methods to set the values of license number,
+  # username or password
+  #
+  # @example Valid calls:
+  #   Mensario.license( "PTIY124434534" )
+  #   Mensario.username( "crnb3222" )
+  #   Mensario.password( "smsacblwenk" )
+  # @example Invalid calls:
+  #   Mensario.license = "PTIY124434534"
+  #
+  # @param [Symbol] method Method called that is missing
+  # @param [Array] params Params in the call
+  # @param [Block] block Block code in method
+  def self.method_missing( method, *params, &block )
+    if params.length == 1
+      @@config = {} unless @@config
+      @@config[method] = params[0] if [:license, :username, :password].include? method
+    end
+  end
+
+  # Set configuration parameters license, username and password 
+  # through a block
+  # 
+  # @example
+  #   Mensario::set_config do |m|
+  #     m.license( "ASDER1234512" )
+  #     m.username( "caee4444" )
+  #     m.password( "xcderfa23" )
+  #   end
+  def self.set_config
+    yield self
+  end
+
+
   # Do de api call with all data and process the response
   #
   # @param [String] task Name of api task 
