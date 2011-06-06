@@ -9,17 +9,18 @@ This gem allows us to perform the following operations through the mensario API:
 ## Config
 There are three ways to set configuration parameters of Mensario:
 
-* Separately:
+### Separately
     Mensario::license( "PERT123446423" )
     Mensario::username( "caer3456" )
-* Block of code:
+
+### Block of code
     Mensario::set_config do |m|
       m.license( "PERT123446423" )
       m.username( "caer3456" )
       m.password( "frt3gg5" )
     end
-* Through a YAML file:
-
+    
+### Through a YAML file
 By default, Mensario expects a YAML configuration file in ```config/mensario.yml``` root path of our application.
 
 The YAML file expects to have the following scheme:
