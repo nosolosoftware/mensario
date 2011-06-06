@@ -7,6 +7,18 @@ This gem allows us to perform the following operations through the mensario API:
 * Cancel a programmed message
 
 ## Config
+There are three ways to set configuration parameters of Mensario:
+
+* Separately:
+    Mensario::license( "PERT123446423" )
+    Mensario::username( "caer3456" )
+* Block of code:
+    Mensario::set_config do |m|
+      m.license( "PERT123446423" )
+      m.username( "caer3456" )
+      m.password( "frt3gg5" )
+    end
+* Through a YAML file:
 
 By default, Mensario expects a YAML configuration file in ```config/mensario.yml``` root path of our application.
 
@@ -80,6 +92,14 @@ Only messages whose status is "CMS-PEND" can be cancelled. The method ```Mensari
 For example:
 
     Mensario::destroy 12345678
+
+## Check balance remaining
+
+Method ```Mensario::balance``` allow us to consult balance
+
+For example:
+
+    Mensario::balance
 
 ## Handle errors
 
