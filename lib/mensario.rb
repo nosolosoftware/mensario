@@ -78,7 +78,7 @@ class Mensario
   # @return [Hash] response hash
   def self.api_call(task, data = {})
     #Get config
-    self::config unless @@config[:license] && @config[:username] && @@config[:password]
+    self::config unless @@config[:license] && @@config[:username] && @@config[:password]
 
     basic = { 'task' => ["#{task}"],
               'license' => {
