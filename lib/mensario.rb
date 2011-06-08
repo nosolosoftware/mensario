@@ -64,9 +64,9 @@ class Mensario
   # 
   # @example
   #   Mensario::set_config do |m|
-  #     m.license( "ASDER1234512" )
-  #     m.username( "caee4444" )
-  #     m.password( "xcderfa23" )
+  #     m.license = "ASDER1234512
+  #     m.username = "caee4444"
+  #     m.password = "xcderfa23"
   #   end
   def self.set_config
     yield self
