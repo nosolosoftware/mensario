@@ -57,6 +57,13 @@ class Mensario
       @@config[method] = params[0]
   end
 
+  # Set the value of the license number
+  #
+  # @param [String] license License number
+  def self.license=(license)
+    @@config[:license] = license
+  end
+
   # Set configuration parameters license, username and password 
   # through a block
   # 
