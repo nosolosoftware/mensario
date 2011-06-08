@@ -139,7 +139,7 @@ class Mensario
   # @return [Integer] Id of sms
   def self.send_message(opts = {})
     date = opts[:date] || '00000000000000'
-    date = date.to_s.gsub(/\s|[:-]/, '')[0..13] if date.class == Time
+    date = date.strftime('%Y%m%d%H%M%S') if date.class == Time
 
     xml = {
       'timezone' => [ opts[:timezone] || '' ],
