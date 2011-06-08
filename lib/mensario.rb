@@ -38,25 +38,6 @@ class Mensario
   # Store config
   @@config = {}
 
-  # Use undefined methods to set the values of license number,
-  # username or password
-  #
-  # @example Valid calls:
-  #   Mensario.license( "PTIY124434534" )
-  #   Mensario.username( "crnb3222" )
-  #   Mensario.password( "smsacblwenk" )
-  # @example Invalid calls:
-  #   Mensario.license = "PTIY124434534"
-  #
-  # @param [Symbol] method Method called that is missing
-  # @param [Array] params Params in the call
-  # @param [Block] block Block code in method
-  def self.method_missing( method, *params, &block )
-    raise NoMethodError, "undefined method #{method}" unless [:license, :username, :password].include? method
-    raise ArgumentError, "wrong number of arguments(#{params.length} for 1)" unless params.length == 1
-      @@config[method] = params[0]
-  end
-
   # Set the value of the license number
   #
   # @param [String] license License number
