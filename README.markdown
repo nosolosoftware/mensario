@@ -10,14 +10,14 @@ This gem allows us to perform the following operations through the mensario API:
 There are three ways to set configuration parameters of Mensario:
 
 ### Separately
-    Mensario::license( "PERT123446423" )
-    Mensario::username( "caer3456" )
+    Mensario::license =  "PERT123446423"
+    Mensario::username = "caer3456"
 
 ### Block of code
     Mensario::set_config do |m|
-      m.license( "PERT123446423" )
-      m.username( "caer3456" )
-      m.password( "frt3gg5" )
+      m.license = "PERT123446423"
+      m.username = "caer3456"
+      m.password = "frt3gg5"
     end
     
 ### Through a YAML file
