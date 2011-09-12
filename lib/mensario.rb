@@ -64,7 +64,7 @@ class Mensario
   # 
   # @example
   #   Mensario::set_config do |m|
-  #     m.license = "ASDER1234512
+  #     m.license = "ASDER1234512"
   #     m.username = "caee4444"
   #     m.password = "xcderfa23"
   #   end
@@ -104,7 +104,7 @@ class Mensario
 
     result = XmlSimple.xml_in(response.body)
 
-    raise MensarioApiException.new(result['result'].first) unless result['result'].first == 'OK'
+    raise MensarioApiException.new(result['result'].first), result['result'].first unless result['result'].first == 'OK'
     return result
   end
 
