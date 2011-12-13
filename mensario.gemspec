@@ -4,13 +4,13 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{mensario}
-  s.version = "0.2.0"
+  s.name = "mensario"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Javier Aranda", "Juan Antonio Galisteo"]
-  s.date = %q{2011-06-06}
-  s.description = %q{This gem allow us to send, check status and destroy sms using the Mensario service api}
+  s.date = "2011-12-13"
+  s.description = "This gem allow us to send, check status and destroy sms using the Mensario service api"
   s.email = ["jaranda@nosolosoftware.biz", "jgalisteo@nosolosoftware.biz"]
   s.extra_rdoc_files = [
     "README.markdown"
@@ -25,11 +25,11 @@ Gem::Specification.new do |s|
     "lib/mensario/http_exception.rb",
     "mensario.gemspec"
   ]
-  s.homepage = %q{http://github.com/nosolosoftware/mensario}
+  s.homepage = "http://github.com/nosolosoftware/mensario"
   s.licenses = ["GPL-3"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.7.2}
-  s.summary = %q{Wrapper around Mensario API}
+  s.rubygems_version = "1.8.10"
+  s.summary = "Wrapper around Mensario API"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
