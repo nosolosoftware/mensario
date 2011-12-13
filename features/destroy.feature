@@ -21,3 +21,4 @@ Scenario: The message id is incorrect
   And the id "4"
   When I do the destroy call
   Then Mensario should raise a exception with status "KO-UNK-MSGS"
+  And the message of the exception should be "KO-UNK-MSGS"

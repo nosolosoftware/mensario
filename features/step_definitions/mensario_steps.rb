@@ -120,3 +120,7 @@ end
 Then /^Mensario should response with a sms number$/ do
   fail unless @result > 0
 end
+
+Then /^the message of the exception should be "([^"]*)"$/ do |message|
+  @exception.message.should == message
+end

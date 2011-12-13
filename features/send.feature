@@ -23,6 +23,7 @@ Scenario: timezone is wrong
   And a send time
   When I do the send_message call
   Then Mensario should raise a exception with status "KO-INV-TZ"
+  And the message of the exception should be "KO-INV-TZ"
 
 Scenario: phone is wrong
   Given the license number, username and password in the profile "default"
@@ -33,6 +34,7 @@ Scenario: phone is wrong
   And a send time
   When I do the send_message call
   Then Mensario should raise a exception with status "KO-INV-PHN"
+  And the message of the exception should be "KO-INV-PHN"
 
 Scenario: code is wrong
   Given the license number, username and password in the profile "default"
@@ -43,3 +45,4 @@ Scenario: code is wrong
   And a send time
   When I do the send_message call
   Then Mensario should raise a exception with status "KO-INV-CODE"
+  And the message of the exception should be "KO-INV-CODE"
