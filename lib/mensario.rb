@@ -99,7 +99,7 @@ class Mensario
       request.body = xml
       response = http.request(request)
     rescue Exception => e
-      raise MensarioHttpException e.message
+      raise MensarioHttpException.new e.message
     end
 
     result = XmlSimple.xml_in(response.body)
@@ -119,7 +119,7 @@ class Mensario
     profile = opts[:profile] || :default
     
     unless config[profile]
-      raise MensarioException, "Profile doesn't exist in configuration file #{file}"
+      raise MensarioException.new "Profile doesn't exist in configuration file #{file}"
     end
 
     @@config = config[profile]
