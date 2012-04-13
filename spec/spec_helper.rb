@@ -9,10 +9,8 @@ class SimpleCov::Formatter::MergedFormatter
 end
 SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
 
-SimpleCov.start
+SimpleCov.start do
+  add_filter '/features/'
+end
 
-PROJECT_ROOT = File.expand_path("../../..", __FILE__)
-$LOAD_PATH << File.join(PROJECT_ROOT, "lib")
-
-require 'yaml'
-require 'mensario' 
+require File.join( File.dirname( __FILE__ ), '..', 'lib/mensario' )

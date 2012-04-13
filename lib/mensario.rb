@@ -45,6 +45,10 @@ class Mensario
     @@config[:license] = license
   end
 
+  def self.license
+    @@config[:license] || ""
+  end
+
   # Set the value of the username of license
   #
   # @param [String] username Username
@@ -52,11 +56,19 @@ class Mensario
     @@config[:username] = username
   end
 
+  def self.username
+    @@config[:username] || ""
+  end
+
   # Set the value of the password of license
   #
   # @param [String] password Password
   def self.password=(password)
     @@config[:password] = password
+  end
+
+  def self.password
+    @@config[:password] || ""
   end
 
   # Set configuration parameters license, username and password 

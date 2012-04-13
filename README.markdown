@@ -69,10 +69,10 @@ If a message is sent correctly the method return its id.
 An example may be something like this:
 
     opts = {
-      :sender => 'Myself'
-      :text => 'My message'
-      :code => 34
-      :phone => 123456789
+      :sender => 'Myself',
+      :text => 'My message',
+      :code => 34,
+      :phone => 123456789,
       :timezone => 'Europe/Madrid'
     }
 
